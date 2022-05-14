@@ -1,0 +1,13 @@
+django
+pillow
+psycopg2-binary
+#psycopg2
+textfsm
+pyyaml
+django-debug-toolbar
+gunicorn
+celery[redis]
+cython
+fa2
+networkx
+openpyxl

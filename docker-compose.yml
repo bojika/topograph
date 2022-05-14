@@ -1,0 +1,68 @@
+version: "3"
+
+services:
+  redis:
+    container_name: redis
+    image: redis
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "6379:6379"
+
+  celery:
+    container_name: celery
+    build:
+      context: .
+    volumes:
+      - ./topograph:/app
+      - /etc/localtime:/etc/localtime:ro
+    env_file:
+      - .env
+    # entrypoint overrides the default entrypoint declared by the container image
+    entrypoint: celery -A topograph worker -l info
+    depends_on:
+      - redis
+      - topo
+    restart: always
+
+  topo:
+    container_name: topo
+    build:
+      context: .
+    volumes:
+      - static:/static
+      - ./topograph:/app
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - pg
+      - redis
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    volumes:
+      - static:/static
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - topo
+
+  pg:
+    container_name: pg
+    image: postgres # use latest official postgres version
+    volumes:
+      - pg_data:/var/lib/postgresql/data/ # persist data even if container shuts down
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+
+volumes:
+  pg_data:
+  static:

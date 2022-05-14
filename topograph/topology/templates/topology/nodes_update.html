@@ -1,0 +1,19 @@
+{% extends 'topology/base.html' %}
+
+{% block main_content %}
+    <form method="POST">
+      <div  class="row">
+          <div class="row-cols-sm-1 p-2">
+              <p>node hostname meta</i></p>
+        </div>
+        <div class="row-cols-sm-1 p-2">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </div>
+        <div class="row-cols-sm-1 p-2">
+            <button class="btn btn-primary" type="submit">Update</button>
+        </div>
+      </div>
+    </form>
+
+{% endblock main_content %}
