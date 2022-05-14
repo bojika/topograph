@@ -56,7 +56,6 @@ class TopologyModelViewTest(TestCase):
         response = self.client.get('/')
         # Check that the response is 200 OK.
         self.assertEqual(response.status_code, 200)
-        print(response)
 
     def test_topology_list_view(self):
         # print('test_topology_list_view is running...')

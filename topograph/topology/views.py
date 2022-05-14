@@ -12,8 +12,6 @@ from .models import *
 from .forms import *
 from .parsers import get_lsdb
 import datetime
-import networkx as nx
-from fa2 import ForceAtlas2
 from .tasks import calc_layout
 from openpyxl import Workbook
 
@@ -230,7 +228,7 @@ def nodes_update(request):
             for i in data:
                 node = Node.objects.get(topology=topology, label=i[0])
                 node.label = i[1]
-                node.meta_data += ' ' + i[2]
+                node.meta_data.update(json.loads(i[2]))
                 node.save()
             print(form.cleaned_data['raw_data'])
     else:
@@ -330,15 +328,7 @@ class TopologyListView(ListView):
     model = Topology
 
 
-def run(request, id):
-    calc_layout.delay(id)
+def run(request, pk):
+    calc_layout.delay(pk)
     return HttpResponseRedirect(reverse('topology_list'))
 
-# class LoginUser(DataMixin, LoginView):
-#     form_class = AuthenticationForm
-#     template_name = "topology/login.html"
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         c_def = self.get_user_context(title="Авторизация")
-#         return dict(list(context.items()) + list(c_def.items()))
