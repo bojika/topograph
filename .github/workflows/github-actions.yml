@@ -17,5 +17,7 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Build the docker-compose stack
         run: docker-compose up -d
+      - name: Check containers status
+        run: docker ps -a
       - name: Run Django tests
         run: docker exec -t topo python manage.py test
